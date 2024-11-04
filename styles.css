@@ -1,0 +1,113 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #e0f7fa, #80deea);
+    height: 93.3vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1 {
+    color: #006064;
+    margin-bottom: 30px;
+}
+
+.question-box {
+    font-family: Arial;
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 15px; /* Increased rounding for a softer look */
+    width: 400px;
+    height: 400px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease; /* Smooth shadow transition */
+}
+
+.question-box:hover {
+    box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.2); /* Hover effect */
+}
+
+input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px; /* Rounded input fields */
+    border: 1px solid #009688; /* Border color */
+    margin-bottom: 10px;
+}
+
+input:focus {
+    border-color: #004d40; /* Darker border on focus */
+    outline: none; /* Remove default outline */
+}
+
+button {
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #009688; /* Button color */
+    color: white;
+    border: none;
+    border-radius: 5px; /* Rounded button */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth color transition */
+    width: 100px;
+}
+
+button:hover {
+    background-color: #00796b; /* Darker shade on hover */
+    box-shadow: 0 0 50px #c691e6;
+}
+
+.hint {
+    font-style: italic;
+    color: #888;
+    margin-top: 10px; /* Space above hint */
+}
+
+.next-button {
+    margin-top: 20px; /* Space above next question button */
+    background-color: rgb(85, 166, 166); /* Button color */
+}
+
+.next-button:hover {
+    background-color: #004d40; /* Darker shade on hover */
+}
+
+#progress-container {
+    margin: 20px auto;
+    width: 400px;
+    text-align: left;
+}
+
+#progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#progress-fill {
+    height: 100%;
+    width: 0;
+    background-color: #009688;
+    transition: width 0.3s ease;
+}
+
+
+
+/*** Spinner ***/
+#spinner {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .5s ease-out, visibility 0s linear .5s;
+    z-index: 99999;
+}
+
+#spinner.show {
+    transition: opacity .5s ease-out, visibility 0s linear 0s;
+    visibility: visible;
+    opacity: 1;
+}

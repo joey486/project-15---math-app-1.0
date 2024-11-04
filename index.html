@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Learning App</title>
+    <link rel="icon" href="./favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Spinner Start -->
+    <!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+        </div>
+    </div> -->
+    <!-- Spinner End -->
+     
+    <h1>Math Learning App</h1>
+    <div id="question-container" class="question-box">
+        <p id="question">Loading question...</p>
+        <input type="text" id="user-answer" placeholder="Your answer" autocomplete="off" />
+        <button onclick="checkAnswer()">Submit</button>
+        <p id="hint" class="hint"></p>
+        <p id="result"></p>
+        <button class="next-button" onclick="getRandomQuestion()">Next Question</button>
+        <button onclick="showHint()">Show Hint</button> 
+    </div>
+
+    
+    <div id="progress-container">
+        <p>Progress:</p>
+        <div id="progress-bar">
+            <div id="progress-fill"></div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
