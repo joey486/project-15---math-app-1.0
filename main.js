@@ -1,39 +1,33 @@
+import { currentLanguage } from "./language.js";
+
+let questions = [];
+let currentQuestion = {};
 let correctAnswers = 0;
 
-// Wait until the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', function() {                                                                       
-    // Global variables to store the questions
-    let questions = [];
-    let currentQuestion = {};
-  
-    // Fetch the CSV file and parse it
-    fetch('questions.csv')
-        .then(response => response.text())
+// Function to fetch and load questions from the JSON file
+export function loadQuestions() {
+    if ( currentLanguage === "en"){
+        fetch('./database/questions_en.json')
+        .then(response => response.json())
         .then(data => {
-            questions = parseCSV(data);
+            questions = data;
             getRandomQuestion(); // Load a random question initially
         })
-        .catch(error => console.error('Error loading CSV:', error));
-  
-    // Function to parse the CSV file
-    function parseCSV(data) {
-        let rows = data.trim().split('\n');
-        let result = [];
-        
-        // Extract data from each row
-        for (let i = 1; i < rows.length; i++) { // Adjust this to let i = 0 if CSV has no headers
-            let cols = rows[i].split(',');
-            result.push({
-                question: cols[0].replace(/"/g, ''),
-                answer: cols[1].trim(),
-                hint: cols[2].replace(/"/g, '')
-            });
-        }
-        return result;
+        .catch(error => console.error('Error loading JSON:', error));
     }
-  
-    // Function to get a random question
-    window.getRandomQuestion = function() { // Added 'window.' to make it globally accessible
+    else{
+        fetch('./database/questions_he.json')
+        .then(response => response.json())
+        .then(data => {
+            questions = data;
+            getRandomQuestion(); // Load a random question initially
+        })
+        .catch(error => console.error('Error loading JSON:', error));
+    }
+}
+
+// Function to get a random question
+export function getRandomQuestion() {
     if (questions.length === 0) {
         document.getElementById('question').textContent = 'No questions available.';
         return;
@@ -42,76 +36,57 @@ document.addEventListener('DOMContentLoaded', function() {
     // Pick a random question
     currentQuestion = questions[Math.floor(Math.random() * questions.length)];
     
-    // Display the question
+    // Display the question and reset other fields
     document.getElementById('question').textContent = currentQuestion.question;
     document.getElementById('user-answer').value = '';
     document.getElementById('hint').textContent = '';
     document.getElementById('result').textContent = '';
-};
-  
-    // Function to check the answer
-    window.checkAnswer = function() {
-        // Handle case where no question is available
-        if (!currentQuestion.question) {
-            document.getElementById('result').textContent = 'No question to answer.';
-            return;
-        }
-  
-        let userAnswer = document.getElementById('user-answer').value.trim();
-        let resultText = '';
-        
-        if (userAnswer === currentQuestion.answer) {
-            resultText = 'Correct!';
-        } else {
-            resultText = `Wrong! The correct answer is ${currentQuestion.answer}.`;
-        }
-        
-        document.getElementById('result').textContent = resultText;
-    };
-  
-    // Function to show a hint
-    window.showHint = function() {
-        document.getElementById('hint').textContent = `Hint: ${currentQuestion.hint}`;
-    };
+}
 
-    function updateProgressBar() {
-        const totalQuestions = questions.length;
-        const progressPercent = (correctAnswers / totalQuestions) * 100;
-        document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+// Function to check the answer
+function checkAnswer() {
+    const userAnswerInput = document.getElementById('user-answer');
+    const userAnswer = userAnswerInput.value.trim();
+
+    // Check if the answer box is empty
+    if (userAnswer === '') {
+        document.getElementById('result').textContent = 'Please enter an answer.';
+        userAnswerInput.focus(); // Focus on the answer box
+        return;
+    }
+
+    // Proceed with checking the answer if not empty
+    let resultText = '';
+    if (userAnswer === currentQuestion.answer) {
+        resultText = 'Correct!';
+        correctAnswers++;  // Increment correct answers
+        updateProgressBar();  // Update progress bar
+    } else {
+        resultText = `Wrong! The correct answer is ${currentQuestion.answer}.`;
     }
     
-    window.checkAnswer = function() {
-        if (!currentQuestion.question) {
-            document.getElementById('result').textContent = 'No question to answer.';
-            return;
-        }
-    
-        let userAnswer = document.getElementById('user-answer').value.trim();
-        let resultText = '';
-    
-        if (userAnswer === currentQuestion.answer) {
-            resultText = 'Correct!';
-            correctAnswers++;  // Increment correct answers
-            updateProgressBar();  // Update progress bar
-        } else {
-            resultText = `Wrong! The correct answer is ${currentQuestion.answer}.`;
-        }
-    
-        document.getElementById('result').textContent = resultText;
-    };
+    document.getElementById('result').textContent = resultText;
+}
 
-    function updateProgressBar() {
-        const totalQuestions = questions.length;
-        const progressPercent = (correctAnswers / totalQuestions) * 100;
-        document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+// Function to show a hint
+function showHint() {
+    document.getElementById('hint').textContent = `Hint: ${currentQuestion.hint}`;
+}
+
+// Function to update the progress bar and check for completion
+function updateProgressBar() {
+    const totalQuestions = questions.length;
+    const progressPercent = (correctAnswers / totalQuestions) * 100;
+    document.getElementById('progress-fill').style.width = `${progressPercent}%`;
     
-        // Redirect if progress bar is full
-        if (progressPercent >= 100) {
-            window.location.href = 'completion.html';
-        }
+    // Redirect if progress bar is full
+    if (progressPercent >= 100) {
+        window.location.href = 'completion.html';
     }
-    
-    // Keypress event listener for both "Enter" actions
+}
+
+// Event listener for Enter key to submit answer or get next question
+function setupEnterKeyListener() {
     document.getElementById('user-answer').addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
             if (document.getElementById('result').textContent !== '') {
@@ -121,16 +96,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+}
+
+// Initialize the app once the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    loadQuestions();          // Load questions from the JSON file
+    setupEnterKeyListener();   // Set up key listener for Enter key
 });
-  
 
 
-        // // Spinner
-        // var spinner = function () {
-        //     setTimeout(function () {
-        //         if ($('#spinner').length > 0) {
-        //             $('#spinner').removeClass('show');
-        //         }
-        //     }, 1);
-        // };
-        // spinner();
+document.getElementById('check-question-btn').addEventListener('click', checkAnswer); //
+document.getElementById('get-next-question').addEventListener('click', getRandomQuestion); //
+document.getElementById('show-hint').addEventListener('click', showHint); //
